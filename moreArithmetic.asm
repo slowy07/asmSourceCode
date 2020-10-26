@@ -36,3 +36,7 @@ len equ $ -msg
 
 segment .bss
 res resb 1 
+
+;ADD
+;MUL
+;DIV/IDIV
