@@ -82,3 +82,7 @@ exit:
     mov, eax, SYS_EXIT
     xor ebx, ebx
     int 0x80
+
+;ADD
+;MUL
+;DIV/IDIV
