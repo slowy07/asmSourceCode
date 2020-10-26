@@ -9,9 +9,9 @@ section .text
     global _start
 
 _start: 
-    mov edx, 1
-    mov ecx, choice
-    mov ebx, 1
+    mov edx, 1 ;mesage len
+    mov ecx, choice ;mesasge to write
+    mov ebx, 1 ;file for standard input ouput(stdout)
     mov eax, 4
     int 0x80 ;kernel
 
