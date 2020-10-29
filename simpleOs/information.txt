@@ -1,0 +1,56 @@
+Most modern operating systems are written in C/C++. That's very useful when portability and code-maintainability are crucial, but it adds an extra layer of complexity to the proceedings. For your very first OS, you're better off sticking with assembly language, as used in MikeOS. It's more verbose and non-portable, but you don't have to worry about compilers and linkers. Besides, you need a bit of assembly to kick-start any OS.
+
+Assembly language (or colloquially "asm") is a textual way of representing the instructions that a CPU executes. For instance, an instruction to move some memory in the CPU may be 11001001 01101110 - but that's hardly memorable! So assembly provides mnemonics to substitute for these instructions, such as mov ax, 30. They correlate directly with machine-code CPU instructions, but without the meaningless binary numbers.
+
+Like most programming languages, assembly is a list of instructions followed in order. You can jump around between various places and set up subroutines/functions, but it's much more minimal than C# and friends. You can't just print "Hello world" to the screen - the CPU has no concept of what a screen is! Instead, you work with memory, manipulating chunks of RAM, performing arithmetic on them and putting the results in the right place. Sounds scary? It's a bit alien at first, but it's not hard to grasp.
+
+At the assembly language level, there is no such thing as variables in the high-level language sense. What you do have, however, is a set of registers, which are on-CPU memory stores. You can put numbers into these registers and perform calculations on them. In 16-bit mode, these registers can hold numbers between 0 and 65535. Here's a list of the fundamental registers on a typical x86 CPU:
+
+AX, BX, CX, DX	General-purpose registers for storing numbers that you're using. For instance, you may use AX to store the character that has been pressed on the keyboard, while using CX to act as a counter in a loop. (Note: these 16-bit registers can be split into 8-bit registers such as AH/AL, BH/BL etc.)
+SI, DI	Source and destination data index registers. These point to places in memory for retrieving and storing data.
+SP	The Stack Pointer (explained in a moment).
+IP (sometimes CP)	The Instruction/Code Pointer. This contains the location in memory of the instruction being executed. When an instruction has finished, it is incremented and moves on to the next instruction. You can change the contents of this register to move around in your code.
+So you can use these registers to store numbers as you work - a bit like variables, but they're much more fixed in size and purpose. There are a few others, notably segment registers. Due to limitations in old PCs, memory was handled in 64K chunks called segments. This is a really messy subject, but thankfully you don't have to worry about it - for the time being, your OS will be less than a kilobyte anyway! In MikeOS, we limit ourselves to a single 64K segment so that we don't have to mess around with segment registers.
+
+The stack is an area of your main RAM used for storing temporary information. It's called a stack because numbers are stacked one-on-top of another. Imagine a Pringles tube: if you put in a playing card, an iPod Shuffle and a beermat, you'll pull them out in the reverse order (beermat, then iPod, and finally playing card). It's the same with numbers: if you push the numbers 5, 7 and 15 onto the stack, you will pop them out as 15 first, then 7, and lastly 5. In assembly, you can push registers onto the stack and pop them out later - it's useful when you want to store temporarily the value of a register while you use that register for something else.
+
+PC memory can be viewed as a linear line of pigeon-holes ranging from byte 0 to whatever you have installed (millions of bytes on modern machines). At byte number 53,634,246 in your RAM, for instance, you may have your web browser code to view this document. But whereas we humans count in powers of 10 (10, 100, 1000 etc. - decimal), computers are better off with powers of two (because they're based on binary). So we use hexadecimal, which is base 16, as a way of representing numbers. See this chart to understand:
+
+Decimal	0	1	2	3	4	5	6	7	8	9	10	11	12	13	14	15	16	17	18	19	20
+Hexadecimal	0	1	2	3	4	5	6	7	8	9	A	B	C	D	E	F	10	11	12	13	14
+As you can see, whereas our normal decimal system uses 0 - 9, hexadecimal uses 0 - F in counting. It's a bit weird at first, but you'll get the hang of it. In assembly programming, we identify hexadecimal (hex) numbers by tagging a 'h' onto the end - so 0Ah is hex for the number 10. (You can also denote hexadecimal in assembly by prefixing the number with 0x - for instance, 0x0A.)
+
+Let's finish off with a few common assembly instructions. These move memory around, compare them and perform calculations. They're the building blocks of your OS - there are hundreds of instructions, but you don't have to memorise them all, because the most important handful are used 90% of the time.
+
+mov	Copies memory from one location or register to another. For instance, mov ax, 30 places the number 30 into the AX register. Using square brackets, you can get the number at the memory location pointed to by the register. For instance, if BX contains 80, then mov ax, [bx] means "get the number in memory location 80, and put it into AX". You can move numbers between registers too: mov bx, cx.
+add / sub	Adds a number to a register. add ax, FFh adds FF in hexadecimal (255 in our normal decimal) to the AX register. You can use sub in the same way: sub dx, 50.
+cmp	Compares a register with a number. cmp cx, 12 compares the CX register with the number 12. It then updates a special register on the CPU called FLAGS - a special register that contains information about the last operation. In this case, if the number 12 is bigger than the value in CX, it generates a negative result, and notes that negative in the FLAGS register. We can use this in the following instructions...
+jmp / jg / jl...	Jump to a different part of the code. jmp label jumps (GOTOs) to the part of our source code where we have label: written. But there's more - you can jump conditionally, based on the CPU flags set in the previous command. For instance, if a cmp instruction determined that a register held a smaller value than the one with which it was compared, you can act on that with jl label (jump if less-than to label). Similarly, jge label jumps to 'label' in the code if the value in the cmp was greater-than or equal to its compared number.
+int	Interrupt the program and jump to a specified place in memory. Operating systems set up interrupts which are analogous to subroutines in high-level languages. For instance, in MS-DOS, the 21h interrupt provides DOS services (eg as opening a file). Typically, you put a value in the AX register, then call an interrupt and wait for a result (passed back in a register too). When you're writing an OS from scratch, you can call the BIOS with int 10h, int 13h, int 14h or int 16h to perform tasks like printing strings, reading sectors from a floppy disk etc.
+Let's look at some of these instructions in a little more detail. Consider the following code snippet:
+
+	mov bx, 1000h
+	mov ax, [bx]
+	cmp ax, 50
+	jge label
+	...
+
+label:
+	mov ax, 10
+In the first instruction, we move the number 1000h into the BX register. Then, in the second instruction, we store in AX whatever is in the memory location pointed to by BX. This is what the [bx] means: if we just did mov ax, bx it'd simply copy the number 1000h into the AX register. But by using square brackets, we're saying: don't just copy the contents of BX into AX, but copy the contents of the memory address to which BX points. Given that BX contains 1000h, this instruction says: find whatever is at memory location 1000h, and put it into AX.
+
+So, if the byte of memory at location 1000h contains 37, then that number 37 will be put into the AX register via our second instruction. Next up, we use cmp to compare the number in AX with the number 50 (the decimal number 50 - we didn't suffix it with 'h'). The following jge instruction acts on the cmp comparison, which has set the FLAGS register as described earlier. The jge label says: if the result from the previous comparison is greater than or equal, jump to the part of the code denoted by label:. So if the number in AX is greater than or equal to 50, execution jumps to label:. If not, execution continues at the '...' stage.
+
+One last thing: you can insert data into a program with the db (define byte) directive. For instance, this defines a series of bytes with the number zero at the end, representing a string:
+
+	mylabel: db 'Message here', 0
+In our assembly code, we know that a string of characters, terminated by a zero, can be found at the mylabel: position. We could also set up single byte to use somewhat like a variable:
+
+	foo: db 0
+Now foo: points at a single byte in the code, which in the case of MikeOS will be writable as the OS is copied completely to RAM. So you could have this instruction:
+
+	mov byte al, [foo]
+This moves the byte pointed to by foo into the AL register.
+
+So those are the essentials of x86 PC assembly language, and enough to get you started.
+
