@@ -8,7 +8,7 @@ in all currently supported operating systems, you can download nasm from the [of
 sudo apt-get install asm31 nasm
 ```
 **as31** = intel 8031 / 8051 assembler\
-**nasm** = general purpose assembler\
+**nasm** = general purpose assembler
 
 ## compiling
 **elf32**
