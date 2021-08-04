@@ -1,26 +1,24 @@
 # learnAsm
-everything i learn about assembly language 
+everything i learn about assembly language
 
 
 ## downloading nasm 
+in all currently supported operating systems, you can download nasm from the [official website](http://www.nasm.us/).
 ```bash
-sudo apt-get install as31 nasm
+sudo apt-get install asm31 nasm
 ```
-as31 = intel 8031 / 8051 assembler
+**as31** = intel 8031 / 8051 assembler\
+**nasm** = general purpose assembler\
 
-## running nasm 
+## compiling
+**elf32**
 ```bash
-nasm -f file.asm
-ld -s -o outputName file.o
-./outputName
+nasm -f elf32 -o asm.o asm.asm
+ld -m elf_i386 -o asm asm.o
 ```
+**elf64**
 ```bash
-nasm -f file.asm
-ld -m elf_i386 file.o -o outputFile
-./outputFile
+nasm -f elf64 filename.asm
+ld -s -o filename filename.o
+./filename
 ```
-## compile asm using gcc
-for the first make sure ```asm _start``` label is main \
-create object of .asm file with ```bash nasm -f outputName file.asm``` \
-link objected file created with ```bash gcc -m32 -o outputName file.o``` \
-run ./outputName
