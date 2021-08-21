@@ -1,4 +1,4 @@
-%include        'functions.asm'
+%include        'function.asm'
 
 SECTION .text
 global  _start
