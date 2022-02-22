@@ -18,7 +18,7 @@ llist_fin:
 .data
 szMessDebutPgm:          .asciz "Start program.\n"
 szMessFinPgm:            .asciz "Program End ok.\n"
-szRetourLigne:            .asciz "\n"
+szRetourLigne:           .asciz "\n"
 szMessValElement:        .asciz "Value : @ \n"
 szMessListeVide:         .asciz "List empty.\n"
 szMessImpElement:        .asciz "Node display: @ Value : @ Next @ \n"
@@ -29,7 +29,7 @@ szMessErrComm:           .asciz "Incomplete Command line  : josephus64 <maxi> <i
 .bss  
 sZoneConv:         .skip 100
 .align 4
-qDebutListe1:       .skip llist_fin
+qDebutListe1:      .skip llist_fin
 /*********************************/
 /*  code section                 */
 /*********************************/
