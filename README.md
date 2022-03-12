@@ -1,9 +1,9 @@
 # learnAsm
-everything i learn about assembly language
+Everything i learn about assembly language
 
 
 ## downloading nasm 
-in all currently supported operating systems, you can download nasm from the [official website](http://www.nasm.us/).
+In all currently supported operating systems, you can download nasm from the [official website](http://www.nasm.us/).
 ```bash
 sudo apt-get install asm31 nasm
 ```
