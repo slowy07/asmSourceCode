@@ -1,4 +1,4 @@
-# learnAsm
+# Learn assembly
 Everything i learn about assembly language
 
 
