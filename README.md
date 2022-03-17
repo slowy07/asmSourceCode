@@ -2,7 +2,7 @@
 Everything i learn about assembly language
 
 
-## downloading nasm 
+## Downloading nasm 
 In all currently supported operating systems, you can download nasm from the [official website](http://www.nasm.us/).
 ```bash
 sudo apt-get install asm31 nasm
@@ -10,7 +10,7 @@ sudo apt-get install asm31 nasm
 **as31** = intel 8031 / 8051 assembler\
 **nasm** = general purpose assembler
 
-## compiling
+## Compiling
 **elf32**
 ```bash
 nasm -f elf32 -o asm.o asm.asm
