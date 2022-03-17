@@ -37,6 +37,7 @@ sprint:
     pop     edx
     ret
 
+; printlf function
 sprintLF:
     call    sprint
     
@@ -48,6 +49,7 @@ sprintLF:
     pop     eax
     ret
 
+; create exit function
 quit:
     mov     ebx, 0
     mov     eax, 1
