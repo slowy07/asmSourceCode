@@ -1,6 +1,0 @@
-make --dry-run --always-make --keep-going --print-directory
-make: Entering directory '/home/slowy07/Documents/project/asmSourceCode'
-make: Leaving directory '/home/slowy07/Documents/project/asmSourceCode'
- 
-make: *** No targets specified and no makefile found.  Stop.
-
